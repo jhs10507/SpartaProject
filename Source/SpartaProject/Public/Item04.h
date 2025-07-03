@@ -2,8 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/AudioComponent.h"
-#include "Particles/ParticleSystemComponent.h"
+#include "Components/AudioComponent.h"                 // 오디오 관련 호출 시 필요한 헤더
+#include "Particles/ParticleSystemComponent.h"         // 파티클 관련 호출 시 필요한 헤더
 #include "Item04.generated.h"
 
 UCLASS()
@@ -16,7 +16,7 @@ public:
 
 protected:
 	USceneComponent* SceneRoot;
-	UAudioComponent* AudioComp;
+	UAudioComponent* AudioComp;                       // 오디오 컴포넌트
 	UStaticMeshComponent* StaticMeshComp;
-	UParticleSystemComponent* ParticleComp;
+	UParticleSystemComponent* ParticleComp;           // 파티클 컴포넌트
 };
