@@ -11,14 +11,15 @@ ASpartaCharacter::ASpartaCharacter()
 
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArmComp->SetupAttachment(RootComponent);
-	SpringArmComp->TargetArmLength = 300.0f;
+	SpringArmComp->TargetArmLength = 200.0f;
 	SpringArmComp->bUsePawnControlRotation = true;
+	SpringArmComp->SocketOffset = FVector(0.0f, 40.0f, 15.0f);
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
 	CameraComp->bUsePawnControlRotation = false;
 
-	NormalSpeed = 6;
+	NormalSpeed = 600.0f;
 	SprintSpeedMultiplier = 1.7f;
 	SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
 
@@ -113,6 +114,7 @@ void ASpartaCharacter::StartJump(const FInputActionValue& value)
 	if (value.Get<bool>())
 	{
 		Jump();
+		UE_LOG(LogTemp, Warning, TEXT("Jump"));
 	}
 }
 void ASpartaCharacter::StopJump(const FInputActionValue& value)
@@ -120,6 +122,7 @@ void ASpartaCharacter::StopJump(const FInputActionValue& value)
 	if (!value.Get<bool>())
 	{
 		StopJumping();
+		UE_LOG(LogTemp, Warning, TEXT("Landing"));
 	}
 }
 void ASpartaCharacter::Look(const FInputActionValue& value)
@@ -134,6 +137,7 @@ void ASpartaCharacter::StartSprint(const FInputActionValue& value)
 	if (GetCharacterMovement())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("Fast"));
 	}
 }
 void ASpartaCharacter::StopSprint(const FInputActionValue& value)
@@ -141,5 +145,6 @@ void ASpartaCharacter::StopSprint(const FInputActionValue& value)
 	if (GetCharacterMovement())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("Slow"));
 	}
 }

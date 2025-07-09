@@ -15,6 +15,7 @@ class SPARTAPROJECT_API ASpartaPlayerController : public APlayerController
 public:
 	ASpartaPlayerController();
 
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputMappingContext* InputMappingContext;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
@@ -25,6 +26,9 @@ public:
 	UInputAction* LookAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* SprintAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	UInputMappingContext* ShowUI;
 
 protected:
 	virtual void BeginPlay() override;

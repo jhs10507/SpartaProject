@@ -1,6 +1,7 @@
 #include "SpartaGameMode.h"
 #include "SpartaCharacter.h"
 #include "SpartaPlayerController.h"
+#include "SpartaPawn.h"
 
 ASpartaGameMode::ASpartaGameMode()
 {
