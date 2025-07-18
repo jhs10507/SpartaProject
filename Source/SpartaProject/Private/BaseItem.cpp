@@ -1,9 +1,18 @@
 #include "BaseItem.h"
+#include "Components/SphereComponent.h"
 
 ABaseItem::ABaseItem()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	Scene = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
+	SetRootComponent(Scene);
+
+	Collision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
+	Collision->SetupAttachment(Scene);
+
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	StaticMesh->SetupAttachment(Collision);
 }
 
 void ABaseItem::OnItemOverlap(AActor* OverlapActor)
