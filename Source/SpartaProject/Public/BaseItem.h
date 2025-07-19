@@ -29,13 +29,27 @@ protected:
 	UStaticMeshComponent* StaticMesh;
 	
 	// 플레이어가 이 아이템의 범위에 들어왔을 때 호출
-	virtual void OnItemOverlap(AActor* OverlapActor) override;
+	virtual void OnItemOverlap(
+		UPrimitiveComponent* OverlappedComp,
+		AActor* OverlapActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult) override;
+
 	// 플레이어가 이 아이템의 범위를 벗어났을 때 호출
-	virtual void OnItemEndOverlap(AActor* OverlapActor) override;
+	virtual void OnItemEndOverlap(
+		UPrimitiveComponent* OverlappedComp,
+		AActor* OverlapActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex) override;
+
 	// 아이템이 사용되었을 때 호출
 	virtual void ActivateItem(AActor* OverlapActor) override;
+
 	// 이 아이템의 타입을 반환
 	virtual FName GetItemType() const override;
+
 	// 아이템 삭제
 	virtual void DestroyItem();
 };

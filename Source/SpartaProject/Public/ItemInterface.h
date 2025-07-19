@@ -16,11 +16,26 @@ class SPARTAPROJECT_API IItemInterface
 
 public:
 	// 플레이어가 이 아이템의 범위에 들어왔을 때 호출
-	virtual void OnItemOverlap(AActor* OverlapActor) = 0;
+	UFUNCTION()
+	virtual void OnItemOverlap(
+		UPrimitiveComponent* OverlappedComp,
+		AActor* OverlapActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult) = 0;
+
 	// 플레이어가 이 아이템의 범위를 벗어났을 때 호출
-	virtual void OnItemEndOverlap(AActor* OverlapActor) = 0;
+	UFUNCTION()
+	virtual void OnItemEndOverlap(
+		UPrimitiveComponent* OverlappedComp,
+		AActor* OverlapActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex) = 0;
+
 	// 아이템이 사용되었을 때 호출
 	virtual void ActivateItem(AActor* OverlapActor) = 0;
+
 	// 이 아이템의 타입을 반환
 	virtual FName GetItemType() const = 0;
 };
