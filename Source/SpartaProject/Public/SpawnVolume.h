@@ -24,10 +24,10 @@ public:
 	UDataTable* ItemDataTable;								// 아이템 데이터 테이블
 
 	UFUNCTION(BlueprintCallable, Category = "Spawning")
-	void SpawnRandomItem();
+	AActor* SpawnRandomItem();
 
 	// 볼륨 안에서 랜덤하게 생성
 	FItemSpawnRow* GetRandomItem() const;
 	FVector GetRandomPointInVolume() const;					// 벡터 위치값
-	void SpawnItem(TSubclassOf<AActor> ItemClass);			// 아이템 테이블
+	AActor* SpawnItem(TSubclassOf<AActor> ItemClass);			// 아이템 테이블
 };
