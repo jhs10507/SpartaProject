@@ -1,4 +1,5 @@
 #include "SpartaGameState.h"
+#include "SpartaGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "SpawnVolume.h"
 #include "CoinItem.h"
@@ -11,6 +12,7 @@ ASpartaGameState::ASpartaGameState()
 	CollectedCoinCount = 0;
 	LevelDuration = 30.0f;
 	CurrentLevelIndex = 0;
+	MaxLevels = 3;
 }
 
 void ASpartaGameState::BeginPlay()
@@ -27,13 +29,28 @@ int32 ASpartaGameState::GetScore() const
 
 void ASpartaGameState::AddScore(int32 Amount)
 {
-	Score += Amount;
-	UE_LOG(LogTemp, Warning, TEXT("Score: %d"), Score);
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		USpartaGameInstance* SpartaGameInstance = Cast<USpartaGameInstance>(GameInstance);
+		if (SpartaGameInstance)
+		{
+			SpartaGameInstance->AddToScore(Amount);
+		}
+	}
 }
 
 // 게임 시작시 초기화
 void ASpartaGameState::StartLevel()
 {
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		USpartaGameInstance* SpartaGameInstance = Cast<USpartaGameInstance>(GameInstance);
+		if (SpartaGameInstance)
+		{
+			CurrentLevelIndex = SpartaGameInstance->CurrentLevelIndex;
+		}
+	}
+
 	SpawnedCoinCount = 0;
 	CollectedCoinCount = 0;
 
@@ -96,16 +113,32 @@ void ASpartaGameState::OnCoinCollected()
 void ASpartaGameState::EndLevel()
 {
 	GetWorldTimerManager().ClearTimer(LevelTimerHandle);
-	CurrentLevelIndex++;
+
+
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		USpartaGameInstance* SpartaGameInstance = Cast<USpartaGameInstance>(GameInstance);
+		if (SpartaGameInstance)
+		{
+			AddScore(Score);
+			CurrentLevelIndex++;
+			SpartaGameInstance->CurrentLevelIndex = CurrentLevelIndex;
+		}
+	}
 
 	if (CurrentLevelIndex >= MaxLevels)
 	{
 		OnGameOver();
 		return;
 	}
+	// 레벨 이름 주소가 맞으면
+	if (LevelMapNames.IsValidIndex(CurrentLevelIndex))
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), LevelMapNames[CurrentLevelIndex]);
+	}
 	else
 	{
-		StartLevel();
+		OnGameOver();
 	}
 }
 
