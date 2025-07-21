@@ -32,6 +32,7 @@ public:
 	TArray<FName> LevelMapNames;
 
 	FTimerHandle LevelTimerHandle;
+	FTimerHandle HUDUpdateTimerHandle;
 
 	UFUNCTION(BlueprintPure, Category = "Score")
 	int32 GetScore() const;
@@ -46,4 +47,5 @@ public:
 	void OnLevelTimeUp();
 	void OnCoinCollected();		// 코인 모으기 (점수 계산)
 	void EndLevel();
+	void UpdateHUD();
 };
