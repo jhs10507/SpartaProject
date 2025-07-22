@@ -12,7 +12,14 @@ class SPARTAPROJECT_API AMineItem : public ABaseItem
 public:
 	AMineItem();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item|Component")
 	USphereComponent* ExplosionCollision;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effect")
+	UParticleSystem* ExplosionParticle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effect")
+	USoundBase* ExplosionSound;
+
 
 	// 폭발 딜레이 시간
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")

@@ -19,6 +19,8 @@ AMineItem::AMineItem()
 
 void AMineItem::ActivateItem(AActor* Activator)
 {
+	Super::ActivateItem(Activator);
+
 	GetWorld()->GetTimerManager().SetTimer(
 		ExplosionTimerHandle, 
 		this, 
@@ -30,6 +32,17 @@ void AMineItem::ActivateItem(AActor* Activator)
 
 void AMineItem::Explode()
 {
+	if (ExplosionParticle)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			ExplosionParticle,
+			GetActorLocation(),
+			GetActorRotation(),
+			true
+		);
+	}
+
 	TArray<AActor*> OverlappingActors;
 	ExplosionCollision->GetOverlappingActors(OverlappingActors);
 
@@ -44,12 +57,6 @@ void AMineItem::Explode()
 				this,
 				UDamageType::StaticClass()
 			);
-
-			/*GEngine->AddOnScreenDebugMessage(
-				-1,
-				2.0f,
-				FColor::Green,
-				FString::Printf(TEXT("Player damaged %d by MineItem"), ExplosionDamage));*/
 		}
 	}
 
