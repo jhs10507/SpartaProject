@@ -41,23 +41,6 @@ void ASpartaPlayerController::BeginPlay()
 	{
 		ShowMainMenu(false);
 	}
-
-	//if (HUDWidgetClass)
-	//{
-	//	HUDWidgetInstance = CreateWidget<UUserWidget>(this, HUDWidgetClass);
-	//	if (HUDWidgetInstance)
-	//	{
-	//		HUDWidgetInstance->AddToViewport();
-	//	}
-	//}
-
-	/*ASpartaGameState* SpartaGameState = GetWorld() ?
-		GetWorld()->GetGameState<ASpartaGameState>() : nullptr;
-
-	if (SpartaGameState)
-	{
-		SpartaGameState->UpdateHUD();
-	}*/
 }
 
 UUserWidget* ASpartaPlayerController::GetHUDWidget() const
@@ -103,6 +86,26 @@ void ASpartaPlayerController::ShowMainMenu(bool bIsRestart)
 				ButtonText->SetText(FText::FromString(TEXT("Start")));
 			}
 		}
+
+		if (bIsRestart)
+		{
+			UFunction* PlayAnimFunc = MainMenuWidgetInstance->FindFunction(FName("PlayGameOverAnim"));
+			if (PlayAnimFunc)
+			{
+				MainMenuWidgetInstance->ProcessEvent(PlayAnimFunc, nullptr);
+			}
+
+			if (UTextBlock* TotalScoreText = Cast<UTextBlock>(
+				MainMenuWidgetInstance->GetWidgetFromName("TotalScoreText")))
+			{
+				if (USpartaGameInstance* SpartaGameInstance = Cast<USpartaGameInstance>(
+					UGameplayStatics::GetGameInstance(this)))
+				{
+					TotalScoreText->SetText(FText::FromString(
+						FString::Printf(TEXT("Total Score: %d"), SpartaGameInstance->TotalScore)));
+				}
+			}
+		}
 	}
 }
 
@@ -132,6 +135,7 @@ void ASpartaPlayerController::ShowGameHUD()
 			SetInputMode(FInputModeGameOnly());
 		}
 
+		// 게임 상태를 HUD로 표시함
 		ASpartaGameState* SpartaGameState = GetWorld() ? GetWorld()->GetGameState<ASpartaGameState>() : nullptr;
 		if (SpartaGameState)
 		{
@@ -151,4 +155,5 @@ void ASpartaPlayerController::StartGame()
 	}
 	// 레벨명을 검색해서 해당 레벨을 불러옴
 	UGameplayStatics::OpenLevel(GetWorld(), FName("BasicLevel"));
+	SetPause(false); // 일시정지
 }

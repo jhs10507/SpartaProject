@@ -17,6 +17,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Score")
 	int32 Score;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Coin")
 	int32 SpawnedCoinCount;	// 소환된 코인 갯수 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Coin")
@@ -25,7 +26,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
 	float LevelDuration;	// 레벨 불러오는 시간
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Coin")
 	int32 CurrentLevelIndex;	// 현재 레벨 주소
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Coin")
 	int32 MaxLevels;			// 최대 레벨
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")

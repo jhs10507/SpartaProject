@@ -48,8 +48,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	void ShowGameHUD();
+
 	UFUNCTION(BlueprintCallable, Category = "Menu")
 	void ShowMainMenu(bool bIsRestart);
+
 	UFUNCTION(BlueprintCallable, Category = "Menu")
 	void StartGame();
 
