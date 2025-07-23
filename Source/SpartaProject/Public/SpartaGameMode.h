@@ -5,7 +5,7 @@
 #include "SpartaGameMode.generated.h"
 
 UCLASS()
-class SPARTAPROJECT_API ASpartaGameMode : public AGameMode
+class SPARTAPROJECT_API ASpartaGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 

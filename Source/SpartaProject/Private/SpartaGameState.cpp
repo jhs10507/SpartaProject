@@ -13,9 +13,10 @@ ASpartaGameState::ASpartaGameState()
 	Score = 0;
 	SpawnedCoinCount = 0;
 	CollectedCoinCount = 0;
-	LevelDuration = 30.0f;
-	CurrentLevelIndex = 0;
+	LevelDuration = 5.0f;
+//	CurrentLevelIndex = 0;
 	MaxLevels = 3;
+
 }
 
 void ASpartaGameState::BeginPlay()
@@ -41,6 +42,7 @@ int32 ASpartaGameState::GetScore() const
 
 void ASpartaGameState::AddScore(int32 Amount)
 {
+	// 점수 표시
 	if (UGameInstance* GameInstance = GetGameInstance())
 	{
 		USpartaGameInstance* SpartaGameInstance = Cast<USpartaGameInstance>(GameInstance);
@@ -54,6 +56,7 @@ void ASpartaGameState::AddScore(int32 Amount)
 // 게임 시작시 초기화
 void ASpartaGameState::StartLevel()
 {
+	// 플레이어 HUD 표시
 	if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
 	{
 		if (ASpartaPlayerController* SpartaPlayerController = Cast<ASpartaPlayerController>(PlayerController))
@@ -64,10 +67,12 @@ void ASpartaGameState::StartLevel()
 
 	if (UGameInstance* GameInstance = GetGameInstance())
 	{
+		// 게임 인스턴스를 현재 레벨 인덱스에 사용
 		USpartaGameInstance* SpartaGameInstance = Cast<USpartaGameInstance>(GameInstance);
 		if (SpartaGameInstance)
 		{
 			CurrentLevelIndex = SpartaGameInstance->CurrentLevelIndex;
+			UE_LOG(LogTemp, Warning, TEXT("현재 레벨 인덱스: %d"), CurrentLevelIndex);
 		}
 	}
 
@@ -128,8 +133,8 @@ void ASpartaGameState::OnCoinCollected()
 
 void ASpartaGameState::EndLevel()
 {
+	// 타이머 헤제
 	GetWorldTimerManager().ClearTimer(LevelTimerHandle);
-
 
 	if (UGameInstance* GameInstance = GetGameInstance())
 	{
@@ -137,20 +142,28 @@ void ASpartaGameState::EndLevel()
 		if (SpartaGameInstance)
 		{
 			AddScore(Score);
-			CurrentLevelIndex++;
+			CurrentLevelIndex++; // 레벨 인덱스 값 증가
 			SpartaGameInstance->CurrentLevelIndex = CurrentLevelIndex;
+			UE_LOG(LogTemp, Warning, TEXT("현재 레벨 인덱스: %d"), CurrentLevelIndex);
+
 		}
 	}
 
+	// 모든 레벨을 다 돌면 게임 오버
 	if (CurrentLevelIndex >= MaxLevels)
 	{
 		OnGameOver();
 		return;
 	}
+
 	// 레벨 이름 주소가 맞으면
 	if (LevelMapNames.IsValidIndex(CurrentLevelIndex))
 	{
 		UGameplayStatics::OpenLevel(GetWorld(), LevelMapNames[CurrentLevelIndex]);
+		/*UE_LOG(LogTemp, Warning, TEXT("Trying to load level: %s"), 
+			*LevelMapNames[CurrentLevelIndex].ToString());*/
+		UE_LOG(LogTemp, Warning, TEXT("레벨 불러오기 시도"));
+
 	}
 	else
 	{
@@ -158,6 +171,7 @@ void ASpartaGameState::EndLevel()
 	}
 }
 
+// 게임 오버 화면
 void ASpartaGameState::OnGameOver()
 {
 	if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
@@ -202,7 +216,7 @@ void ASpartaGameState::UpdateHUD()
 					}
 				}
 
-				if (UTextBlock* LevelIndexText = Cast<UTextBlock>(HUDWidget->GetWidgetFromName(TEXT("Time"))))
+				if (UTextBlock* LevelIndexText = Cast<UTextBlock>(HUDWidget->GetWidgetFromName(TEXT("Level"))))
 				{
 					// 현재 레벨을 문자열로 표시해줌.
 					LevelIndexText->SetText(FText::FromString(FString::Printf(TEXT("Level: %d"), CurrentLevelIndex + 1)));

@@ -153,7 +153,7 @@ void ASpartaCharacter::StartSprint(const FInputActionValue& value)
 	if (GetCharacterMovement())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
-		UE_LOG(LogTemp, Warning, TEXT("Fast"));
+		//UE_LOG(LogTemp, Warning, TEXT("Fast"));
 	}
 }
 void ASpartaCharacter::StopSprint(const FInputActionValue& value)
@@ -161,7 +161,7 @@ void ASpartaCharacter::StopSprint(const FInputActionValue& value)
 	if (GetCharacterMovement())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
-		UE_LOG(LogTemp, Warning, TEXT("Slow"));
+		//UE_LOG(LogTemp, Warning, TEXT("Slow"));
 	}
 }
 
