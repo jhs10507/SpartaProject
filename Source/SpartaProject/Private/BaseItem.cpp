@@ -1,6 +1,7 @@
 #include "BaseItem.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 ABaseItem::ABaseItem()
 {
@@ -48,17 +49,40 @@ void ABaseItem::OnItemEndOverlap(
 
 void ABaseItem::ActivateItem(AActor* OverlapActor)
 {
+	UParticleSystemComponent* Particle = UGameplayStatics::SpawnEmitterAtLocation(
+		GetWorld(),
+		PickupParticle,     // 파티클 가져옴
+		GetActorLocation(), // 월드의 현재 위치
+		GetActorRotation(), // 월드의 회전 위치
+		true
+	);
+
 	if (PickupParticle)
 	{
-		// 아이템의 현재 위치에 파티클을 설치
-		UGameplayStatics::SpawnEmitterAtLocation(
-			GetWorld(),
-			PickupParticle,     // 파티클 가져옴
-			GetActorLocation(), // 월드의 현재 위치
-			GetActorRotation(), // 월드의 회전 위치
-			true
+		FTimerHandle DestroyParticleTimerHandle;
+
+		GetWorld()->GetTimerManager().SetTimer(
+			DestroyParticleTimerHandle,
+			[Particle]()
+			{
+				Particle->DestroyComponent();
+			},
+			1.0f,
+			false
 		);
 	}
+
+	//if (PickupParticle)
+	//{
+	//	// 아이템의 현재 위치에 파티클을 설치
+	//	UGameplayStatics::SpawnEmitterAtLocation(
+	//		GetWorld(),
+	//		PickupParticle,     // 파티클 가져옴
+	//		GetActorLocation(), // 월드의 현재 위치
+	//		GetActorRotation(), // 월드의 회전 위치
+	//		true
+	//	);
+	//}
 
 	if (PickupSound)
 	{

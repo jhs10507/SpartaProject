@@ -1,14 +1,15 @@
 #include "MineItem.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 AMineItem::AMineItem()
 {
 	ExplosionDelay = 5.0f;
 	ExplosionDamage = 30.0f;
 	ExplosionRadius = 300.0f;
-
 	ItemType = "Mine";
+	bHasExploded = false;
 
 	ExplosionCollision = CreateDefaultSubobject<USphereComponent>(TEXT("ExplosionCollision"));
 	// 원형 반경의 값을 폭발 반경 변수만큼 할당
@@ -19,6 +20,8 @@ AMineItem::AMineItem()
 
 void AMineItem::ActivateItem(AActor* Activator)
 {
+	if (bHasExploded) return;
+
 	Super::ActivateItem(Activator);
 
 	GetWorld()->GetTimerManager().SetTimer(
@@ -28,18 +31,38 @@ void AMineItem::ActivateItem(AActor* Activator)
 		ExplosionDelay, 
 		false
 	);
+
+	bHasExploded = true;
 }
 
 void AMineItem::Explode()
 {
-	if (ExplosionParticle)
+	UParticleSystemComponent* Particle = UGameplayStatics::SpawnEmitterAtLocation(
+		GetWorld(),
+		ExplosionParticle,
+		GetActorLocation(),
+		GetActorRotation(),
+		false
+	);;
+
+	//if (ExplosionParticle)
+	//{
+	//	Particle = UGameplayStatics::SpawnEmitterAtLocation(
+	//		GetWorld(),
+	//		ExplosionParticle,
+	//		GetActorLocation(),
+	//		GetActorRotation(),
+	//		false
+	//	);
+	//}
+
+	if (ExplosionSound)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(
+		UGameplayStatics::PlaySoundAtLocation(
 			GetWorld(),
-			ExplosionParticle,
+			ExplosionSound,
 			GetActorLocation(),
-			GetActorRotation(),
-			true
+			false
 		);
 	}
 
@@ -61,4 +84,19 @@ void AMineItem::Explode()
 	}
 
 	DestroyItem();
+
+	if (Particle)
+	{
+		FTimerHandle DestroyParticleTimerHandle;
+
+		GetWorld()->GetTimerManager().SetTimer(
+			DestroyParticleTimerHandle,
+			[Particle]()
+			{
+				if (IsValid(Particle)) Particle->DestroyComponent();
+			},
+			1.0f,
+			false
+		);
+	}
 }
