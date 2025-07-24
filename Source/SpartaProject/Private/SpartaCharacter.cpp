@@ -130,7 +130,7 @@ void ASpartaCharacter::StartJump(const FInputActionValue& value)
 	if (value.Get<bool>())
 	{
 		Jump();
-		UE_LOG(LogTemp, Warning, TEXT("Jump"));
+		//UE_LOG(LogTemp, Warning, TEXT("Jump"));
 	}
 }
 void ASpartaCharacter::StopJump(const FInputActionValue& value)
@@ -138,7 +138,7 @@ void ASpartaCharacter::StopJump(const FInputActionValue& value)
 	if (!value.Get<bool>())
 	{
 		StopJumping();
-		UE_LOG(LogTemp, Warning, TEXT("Landing"));
+		//UE_LOG(LogTemp, Warning, TEXT("Landing"));
 	}
 }
 void ASpartaCharacter::Look(const FInputActionValue& value)

@@ -37,35 +37,29 @@ void AMineItem::ActivateItem(AActor* Activator)
 
 void AMineItem::Explode()
 {
-	UParticleSystemComponent* Particle = UGameplayStatics::SpawnEmitterAtLocation(
-		GetWorld(),
-		ExplosionParticle,
-		GetActorLocation(),
-		GetActorRotation(),
-		false
-	);;
+	TWeakObjectPtr<UParticleSystemComponent> Particle = nullptr;
 
-	//if (ExplosionParticle)
-	//{
-	//	Particle = UGameplayStatics::SpawnEmitterAtLocation(
-	//		GetWorld(),
-	//		ExplosionParticle,
-	//		GetActorLocation(),
-	//		GetActorRotation(),
-	//		false
-	//	);
-	//}
+	if (ExplosionParticle)
+	{
+		Particle = UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			ExplosionParticle,
+			GetActorLocation(),
+			GetActorRotation(),
+			false
+		);
+	}
 
 	if (ExplosionSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(
 			GetWorld(),
 			ExplosionSound,
-			GetActorLocation(),
-			false
+			GetActorLocation()
 		);
 	}
 
+	// 폭발 범위 안에 있는 액터를 전부 확인
 	TArray<AActor*> OverlappingActors;
 	ExplosionCollision->GetOverlappingActors(OverlappingActors);
 
@@ -74,18 +68,18 @@ void AMineItem::Explode()
 		if (Actor && Actor->ActorHasTag("Player"))
 		{
 			UGameplayStatics::ApplyDamage(
-				Actor,
-				ExplosionDamage,
-				nullptr,
-				this,
-				UDamageType::StaticClass()
+				Actor,				// 데미지를 받을 액터
+				ExplosionDamage,	// 데미지의 양
+				nullptr,			// 데미지를 유발한 주체
+				this,				// 데미지를 입힌 액터
+				UDamageType::StaticClass() // 데미지의 유형
 			);
 		}
 	}
 
 	DestroyItem();
 
-	if (Particle)
+	if (Particle.Get())
 	{
 		FTimerHandle DestroyParticleTimerHandle;
 
@@ -93,9 +87,10 @@ void AMineItem::Explode()
 			DestroyParticleTimerHandle,
 			[Particle]()
 			{
-				if (IsValid(Particle)) Particle->DestroyComponent();
+				// 곧 삭제할 것
+				if (IsValid(Particle.Get())) Particle->DestroyComponent();
 			},
-			1.0f,
+			2.0f,
 			false
 		);
 	}
