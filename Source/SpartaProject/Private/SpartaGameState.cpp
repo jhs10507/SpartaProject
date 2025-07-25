@@ -321,11 +321,11 @@ void ASpartaGameState::EndWave()
 	++CurrentWaveIndex;
 	if (CurrentWaveIndex >= MaxWaves)
 	{
-		EndWave();
+		return EndWave();
 	}
 	else
 	{
-		StartWave();
+		return StartWave();
 	}
 }
 
